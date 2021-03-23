@@ -12,7 +12,7 @@
 
 
 
-<title>谭浪</title>
+<title>systemserver | 谭浪</title>
 
 
 
@@ -107,11 +107,73 @@
             <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">systemserver</h1>
             
                 <div class="post-meta">
                     
@@ -120,17 +182,23 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">March 23, 2021&nbsp;&nbsp;14:13:32</a>
+                        Date: <a href="#">March 23, 2021&nbsp;&nbsp;15:19:02</a>
                         </span>
                     
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/android/">android</a>
+                            
+                        </span>
                     
                 </div>
             
         </header>
 
         <div class="post-content">
-            <p><strong>systemServer 启动流程</strong></p>
-<p>ZygoteInit.main()</p>
+            <h2 id="systemServer-启动流程"><a href="#systemServer-启动流程" class="headerlink" title="systemServer 启动流程"></a>systemServer 启动流程</h2><p>ZygoteInit.main()</p>
 <ol>
 <li>创建一个server端为‘zygote‘名称的Socket ，用于等待AMS请求    Zygote来创建新的应用程序进程</li>
 <li>预处理加载类跟资源</li>
@@ -192,7 +260,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://guoxing.show/2021/03/23/tl/systemServer%20%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">https://guoxing.show/2021/03/23/tl/systemServer%20%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</a></span>
+                        <span><a href="https://guoxing.show/2021/03/23/systemserver/systemserver/">https://guoxing.show/2021/03/23/systemserver/systemserver/</a></span>
                     </p>
                 
                 
@@ -225,10 +293,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/03/23/systemserver/systemserver/">systemserver</a>
             
-            
-            <a class="next" rel="next" href="/2020/12/07/android-%E8%BF%9B%E7%A8%8B/">android_进程</a>
+            <a class="next" rel="next" href="/2021/03/23/tl/systemServer%20%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"></a>
             
         </section>
 
