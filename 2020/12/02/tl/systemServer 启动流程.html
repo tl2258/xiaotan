@@ -1,0 +1,49 @@
+<p><strong>systemServer 启动流程</strong></p>
+<p>ZygoteInit.main()</p>
+<ol>
+<li>创建一个server端为‘zygote‘名称的Socket ，用于等待AMS请求    Zygote来创建新的应用程序进程</li>
+<li>预处理加载类跟资源</li>
+<li>根据JIN传递过来的信息来判断是否启动SystemServer进程</li>
+<li>等待AMS请求，用于创建新的应用程序进程</li>
+</ol>
+<p><strong>registerServerSocket</strong>  函数干了什么事情</p>
+<ol>
+<li>拿到拼接之后的Socket名称（Android_socket_zygote）</li>
+<li>通过funsocketName socket名称转换为系统环境变量的值</li>
+<li>将socket的系统环境变量的值转换为文件描述符的参数</li>
+<li>创建FileDescriptor文件描述符</li>
+<li>创建服务端Socket并将拿到对应的文件描述符作为参数传递给服务端Socket</li>
+</ol>
+<p>最后服务端Socket就创建成功了，并处于等待AMS请求zygote 进程来创建新的应用程序进程</p>
+<p>2.启动SystemServer进程</p>
+<p>startSystemServer函数</p>
+<p>nativeZygoteInit()函数 其底层就是调用native层代码，用于启动Binder线程池</p>
+<p>SystenServer就能通过Binder与其他进程进行通信了</p>
+<p>Binder线程池启动</p>
+<p><strong>SystemServer.java main()</strong></p>
+<ol>
+<li>创建消息Looper</li>
+<li>加载动态库libandroid_server.so</li>
+<li>创建系统级别的Context</li>
+<li>创建SystemServiceManager 它会对系统服务进行创建 启动和生命周期管理</li>
+<li>通过SystemServieceManager启动AMS powerMs packageMS</li>
+<li>启动 DropBoxManagerService、BatteryService、UsageStatsService 和 WebViewUpdateService 等核心服务，他们父类都是 SystemServer</li>
+<li>启动 CameraService、AlarmManagerService、VrManagerService 等服务</li>
+</ol>
+<p>总结：</p>
+<ol>
+<li><p>创建一个server端为’zygote‘名称的Socket 用于等待AMS请求Zygote来创建新的应用程序进程</p>
+</li>
+<li><p>预加载类跟资源</p>
+</li>
+<li><p>根据JNI传递过来的信息来判断是否创建SystemServer进程</p>
+</li>
+<li><p>启动Binder线程池,与其他进程进行通信</p>
+</li>
+<li><p>进入SytemServer.java main()函数并创建SystemServerManager,用于各种服务的创建，启动和生命周期的管理</p>
+</li>
+<li><p>启动各种系统服务</p>
+</li>
+<li><p>等待AMS请求，用于创建新的应用程序进程</p>
+</li>
+</ol>

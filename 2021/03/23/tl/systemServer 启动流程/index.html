@@ -12,7 +12,7 @@
 
 
 
-<title>android_进程 | 谭浪</title>
+<title>谭浪</title>
 
 
 
@@ -107,73 +107,11 @@
             <div class="container">
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    document.ready(
-        function () {
-            tocbot.init({
-                tocSelector: '.tocbot-list',
-                contentSelector: '.post-content',
-                headingSelector: 'h1, h2, h3, h4, h5',
-                collapseDepth: 1,
-                orderedList: false,
-                scrollSmooth: true,
-            })
-        }
-    )
-
-    function expand_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 6,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "collapse_toc()");
-        b.innerHTML = "Collapse all"
-    }
-
-    function collapse_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 1,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "expand_toc()");
-        b.innerHTML = "Expand all"
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-</script>
-    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">android_进程</h1>
+            <h1 class="post-title"></h1>
             
                 <div class="post-meta">
                     
@@ -182,32 +120,64 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">December 7, 2020&nbsp;&nbsp;11:24:37</a>
+                        Date: <a href="#">March 23, 2021&nbsp;&nbsp;14:13:32</a>
                         </span>
                     
-                    
-                        <span class="post-category">
-                    Category:
-                            
-                                <a href="/categories/android/">android</a>
-                            
-                        </span>
                     
                 </div>
             
         </header>
 
         <div class="post-content">
-            <h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><p>进程是一个具有独立功能的程序关于某个数据集合的一次运动活动，它可以申请和拥有系统资源，是一个动态的概念，是一个活动的实体，它不只是程序的代码，还包括当前的活动，通过程序计数器的值和处理寄存器的内容来表示。</p>
-<h4 id="进程的概念主要有两点："><a href="#进程的概念主要有两点：" class="headerlink" title="进程的概念主要有两点："></a>进程的概念主要有两点：</h4><ul>
-<li>进程是一个实体，每一个进程都有它自己的地址空间，一般情况下，包括文本区域，数据区域金额堆栈。文本区域存储处理器执行的代码；数据区域存储变量和进程执行期间使用的动态分配的内存；对战区域存储着活动过程调用的指令和本地变量</li>
-<li>进程是一个“执行中的程序”，程序是一个没有生命的实体，只有处理器赋予程序生命时，它才能成为一个活动的实体，我们称为进程。</li>
-</ul>
-<h4 id="进程的基本状态"><a href="#进程的基本状态" class="headerlink" title="进程的基本状态"></a>进程的基本状态</h4><ul>
-<li>阻塞态：等待某个事件的完成</li>
-<li>就绪态：等待系统分配处理器以便运行；</li>
-<li>执行态：占有处理器正在运行；</li>
-</ul>
+            <p><strong>systemServer 启动流程</strong></p>
+<p>ZygoteInit.main()</p>
+<ol>
+<li>创建一个server端为‘zygote‘名称的Socket ，用于等待AMS请求    Zygote来创建新的应用程序进程</li>
+<li>预处理加载类跟资源</li>
+<li>根据JIN传递过来的信息来判断是否启动SystemServer进程</li>
+<li>等待AMS请求，用于创建新的应用程序进程</li>
+</ol>
+<p><strong>registerServerSocket</strong>  函数干了什么事情</p>
+<ol>
+<li>拿到拼接之后的Socket名称（Android_socket_zygote）</li>
+<li>通过funsocketName socket名称转换为系统环境变量的值</li>
+<li>将socket的系统环境变量的值转换为文件描述符的参数</li>
+<li>创建FileDescriptor文件描述符</li>
+<li>创建服务端Socket并将拿到对应的文件描述符作为参数传递给服务端Socket</li>
+</ol>
+<p>最后服务端Socket就创建成功了，并处于等待AMS请求zygote 进程来创建新的应用程序进程</p>
+<p>2.启动SystemServer进程</p>
+<p>startSystemServer函数</p>
+<p>nativeZygoteInit()函数 其底层就是调用native层代码，用于启动Binder线程池</p>
+<p>SystenServer就能通过Binder与其他进程进行通信了</p>
+<p>Binder线程池启动</p>
+<p><strong>SystemServer.java main()</strong></p>
+<ol>
+<li>创建消息Looper</li>
+<li>加载动态库libandroid_server.so</li>
+<li>创建系统级别的Context</li>
+<li>创建SystemServiceManager 它会对系统服务进行创建 启动和生命周期管理</li>
+<li>通过SystemServieceManager启动AMS powerMs packageMS</li>
+<li>启动 DropBoxManagerService、BatteryService、UsageStatsService 和 WebViewUpdateService 等核心服务，他们父类都是 SystemServer</li>
+<li>启动 CameraService、AlarmManagerService、VrManagerService 等服务</li>
+</ol>
+<p>总结：</p>
+<ol>
+<li><p>创建一个server端为’zygote‘名称的Socket 用于等待AMS请求Zygote来创建新的应用程序进程</p>
+</li>
+<li><p>预加载类跟资源</p>
+</li>
+<li><p>根据JNI传递过来的信息来判断是否创建SystemServer进程</p>
+</li>
+<li><p>启动Binder线程池,与其他进程进行通信</p>
+</li>
+<li><p>进入SytemServer.java main()函数并创建SystemServerManager,用于各种服务的创建，启动和生命周期的管理</p>
+</li>
+<li><p>启动各种系统服务</p>
+</li>
+<li><p>等待AMS请求，用于创建新的应用程序进程</p>
+</li>
+</ol>
 
         </div>
 
@@ -222,7 +192,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://guoxing.show/2020/12/07/android-%E8%BF%9B%E7%A8%8B/">https://guoxing.show/2020/12/07/android-%E8%BF%9B%E7%A8%8B/</a></span>
+                        <span><a href="https://guoxing.show/2021/03/23/tl/systemServer%20%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">https://guoxing.show/2021/03/23/tl/systemServer%20%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</a></span>
                     </p>
                 
                 
@@ -255,10 +225,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/03/23/tl/systemServer%20%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"></a>
             
-            
-            <a class="next" rel="next" href="/2020/12/04/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/gc/">性能优化-内存区域和GC初识</a>
+            <a class="next" rel="next" href="/2020/12/07/android-%E8%BF%9B%E7%A8%8B/">android_进程</a>
             
         </section>
 
